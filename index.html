@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Meta Ads – MIF 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Arial, sans-serif; background: #080f1c; color: #e0eaf5; padding: 20px; }
+  .dash { max-width: 1200px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { display: flex; align-items: center; gap: 16px; padding: 18px 24px; background: #0f2044; border-radius: 14px; margin-bottom: 20px; }
+  .logo-box { width: 56px; height: 56px; border-radius: 10px; overflow: hidden; flex-shrink: 0; border: 1.5px solid #0d9de2; }
+  .logo-box img { width: 56px; height: 56px; object-fit: cover; }
+  .header-text h1 { font-size: 18px; font-weight: 600; color: #fff; }
+  .header-text p { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .period-badge { margin-left: auto; background: rgba(13,157,226,0.15); border: 1.5px solid #0d9de2; border-radius: 8px; padding: 6px 14px; font-size: 12px; color: #0d9de2; white-space: nowrap; font-weight: 600; }
+
+  /* KPI GRID — 5 colunas, 2 linhas */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+  .kpi { background: #0f1e35; border-radius: 10px; padding: 14px 16px; border-top: 3px solid #0d9de2; border: 1px solid #1a3050; border-top: 3px solid #0d9de2; }
+  .kpi.cyan { border-top-color: #00c2b3; }
+  .kpi.green { border-top-color: #10b981; }
+  .kpi-label { font-size: 10px; color: #4a7090; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .kpi-value { font-size: 20px; font-weight: 700; color: #e0eaf5; line-height: 1.1; }
+  .kpi-sub { font-size: 10px; color: #3a5570; margin-top: 4px; }
+
+  /* GRAFICO SECTIONS — fundo escuro */
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .row1 { margin-bottom: 16px; }
+  .section { background: #0f1e35; border-radius: 12px; padding: 18px 20px; border: 1px solid #1a3050; }
+  .section-title { font-size: 11px; font-weight: 700; color: #4a7090; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; border-bottom: 1px solid #1a3050; padding-bottom: 10px; }
+  .chart-wrap { position: relative; width: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; font-size: 11px; color: #4a7090; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .leg-sq { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+
+  /* SEÇÕES BRANCAS — tabela e gráfico CPR */
+  .section-white { background: #fff; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+  .section-white .section-title { color: #7a8fa6; border-bottom-color: #eef1f5; }
+  .section-white .legend { color: #7a8fa6; }
+  .section-white .section-title { font-size: 11px; font-weight: 700; color: #7a8fa6; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; border-bottom: 1px solid #eef1f5; padding-bottom: 10px; }
+  .table-outer { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 1200px; }
+  th { font-size: 10px; color: #4a7090; font-weight: 700; text-align: left; padding: 8px 10px; border-bottom: 2px solid #1a3050; white-space: nowrap; background: #0a1828; }
+  td { padding: 9px 10px; border-bottom: 1px solid #152540; vertical-align: middle; white-space: nowrap; font-weight: normal; color: #8bbdd4; }
+  tr:hover td { background: #132038; }
+  tr:last-child td { border-bottom: none; }
+  tfoot tr td { background: #0a2a44; font-weight: 600; color: #0d9de2; border-top: 2px solid #0d9de2; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: middle; }
+  .bar-mini { height: 3px; background: #0d9de2; border-radius: 2px; margin-top: 4px; opacity: 0.35; }
+  .scroll-hint { font-size: 11px; color: #4a7090; text-align: right; margin-bottom: 6px; font-style: italic; }
+  .tag-tipo { font-size: 10px; padding: 2px 7px; border-radius: 4px; }
+  .tag-compra { background: rgba(13,157,226,0.15); color: #0d9de2; }
+  .tag-thru { background: rgba(0,194,179,0.15); color: #00c2b3; }
+  .med { font-size: 10px; color: #4a7090; font-weight: normal; }
+  .footer { text-align: center; font-size: 11px; color: #2a4060; margin-top: 20px; padding-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="dash">
+
+<div class="header">
+  <div class="logo-box"><img src="data:image/jpeg;base64,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" alt="MIF 2026"></div>
+  <div class="header-text">
+    <h1>MIF 2026 — Meta Ads</h1>
+    <p>Relatório de desempenho de campanhas</p>
+  </div>
+  <div class="period-badge">01 ago 2025 – 21 abr 2026</div>
+</div>
+
+<!-- KPIs: 5 colunas x 2 linhas, ordem especificada -->
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">Investimento total</div><div class="kpi-value">R$ 11.431</div><div class="kpi-sub">11 campanhas no período</div></div>
+  <div class="kpi"><div class="kpi-label">Compras no site</div><div class="kpi-value">1.235</div><div class="kpi-sub">Conversões diretas</div></div>
+  <div class="kpi cyan"><div class="kpi-label">CPR médio (compras)</div><div class="kpi-value">R$ 6,75</div><div class="kpi-sub">Custo por resultado</div></div>
+  <div class="kpi cyan"><div class="kpi-label">Impressões totais</div><div class="kpi-value">2,23 MILHÕES</div><div class="kpi-sub">Alcance: 710.854 pessoas</div></div>
+  <div class="kpi"><div class="kpi-label">ThruPlays totais</div><div class="kpi-value">133.244</div><div class="kpi-sub">Visualizações completas</div></div>
+  <div class="kpi" style="border-top-color:#00c2b3"><div class="kpi-label">Méd. faturamento est.</div><div class="kpi-value">R$ 372.970</div><div class="kpi-sub">1.235 compras × R$ 302 ticket médio</div></div>
+  <div class="kpi" style="border-top-color:#00c2b3"><div class="kpi-label">ROI estimado</div><div class="kpi-value">3.163%</div><div class="kpi-sub">(Faturamento − Invest.) ÷ Invest.</div></div>
+  <div class="kpi cyan"><div class="kpi-label">CTR médio</div><div class="kpi-value">1,79%</div><div class="kpi-sub">Taxa de cliques</div></div>
+  <div class="kpi cyan"><div class="kpi-label">Engajamentos</div><div class="kpi-value">608.146</div><div class="kpi-sub">Interações com posts</div></div>
+  <div class="kpi cyan"><div class="kpi-label">CPM médio</div><div class="kpi-value">R$ 6,91</div><div class="kpi-sub">Custo por mil impressões</div></div>
+</div>
+
+<!-- 3 gráficos com fundo escuro -->
+<div class="row3">
+  <div class="section">
+    <div class="section-title">Investimento por campanha (R$)</div>
+    <div class="legend">
+      <span><span class="leg-sq" style="background:#0d9de2"></span>Ativa</span>
+      <span><span class="leg-sq" style="background:#00c2b3"></span>Concluída</span>
+    </div>
+    <div class="chart-wrap" style="height:360px"><canvas id="chartInvest"></canvas></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Resultados — compras</div>
+    <div class="legend"><span><span class="leg-sq" style="background:#0d9de2"></span>Compras no site (exceto camp. 07 e 08)</span></div>
+    <div class="chart-wrap" style="height:360px"><canvas id="chartCompras"></canvas></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Resultados — ThruPlay (camp. 07 e 08)</div>
+    <div class="legend"><span><span class="leg-sq" style="background:#00c2b3"></span>ThruPlays</span></div>
+    <div class="chart-wrap" style="height:360px"><canvas id="chartThruplay"></canvas></div>
+  </div>
+</div>
+
+<!-- onda CPR com fundo escuro -->
+<div class="row1 section" style="margin-bottom:16px">
+  <div class="section-title">Custo por resultado (R$)</div>
+  <div class="legend">
+    <span><span class="leg-sq" style="background:#0d9de2"></span>Compras no site</span>
+    <span><span class="leg-sq" style="background:#00c2b3"></span>ThruPlay</span>
+  </div>
+  <div class="chart-wrap" style="height:200px"><canvas id="chartCPR"></canvas></div>
+</div>
+
+<!-- tabela com fundo branco -->
+<div class="section">
+  <div class="section-title">Detalhamento completo das campanhas</div>
+  <div class="scroll-hint">← Role para ver todas as colunas →</div>
+  <div class="table-outer">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th>Campanha</th><th>Status</th><th>Investimento (R$)</th><th>Tipo de resultado</th>
+          <th>Resultados</th><th>Custo por result. (R$)</th><th>Impressões</th><th>Alcance</th>
+          <th>CPM (R$)</th><th>Frequência</th><th>Cliques (todos)</th><th>CPC (R$)</th>
+          <th>CTR (%)</th><th>ThruPlays</th><th>Custo por ThruPlay (R$)</th>
+          <th>Engajamentos</th><th>Visitas ao perfil</th><th>Compartilhamentos</th>
+          <th>Seguidores</th><th>Início</th><th>Encerramento</th>
+        </tr>
+      </thead>
+      <tbody id="campTable"></tbody>
+      <tfoot id="campTotals"></tfoot>
+    </table>
+  </div>
+</div>
+
+<div class="footer">Gerado automaticamente com dados do Meta Ads · MIF 2026 · Abril 2026</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const camps = [{"name": "01 [MIF 26] - CONV - Lançamento 2026", "short": "01 – Lançamento", "status": "active", "invest": 5724.29, "tipo": "Compras no site", "results": 838, "cpr": 6.83, "impr": 1025644, "alcance": 113804, "cpm": 5.58, "freq": 9.01, "cliques": 17539, "cpc": 0.52, "ctr": 1.71, "thru": 16308, "cpt": 0.35, "eng": 131982, "visitas": 13414, "comp": 1880, "seg": 888, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "02 [MIF 26] - CONV - Mais bonita", "short": "02 – Mais bonita", "status": "completed", "invest": 391.96, "tipo": "Compras no site", "results": 39, "cpr": 10.05, "impr": 62235, "alcance": 25315, "cpm": 6.3, "freq": 2.46, "cliques": 1628, "cpc": 0.41, "ctr": 2.62, "thru": 296, "cpt": 1.32, "eng": 2613, "visitas": 788, "comp": 220, "seg": 137, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "03 [MIF 26] - CONV - BLACK", "short": "03 – BLACK", "status": "completed", "invest": 480.93, "tipo": "Compras no site", "results": 71, "cpr": 6.77, "impr": 43490, "alcance": 20906, "cpm": 11.06, "freq": 2.08, "cliques": 725, "cpc": 0.93, "ctr": 1.67, "thru": null, "cpt": null, "eng": 768, "visitas": 390, "comp": 65, "seg": 24, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "04 [MIF 26] - CONV - BLACK Inscritos", "short": "04 – BLACK v2", "status": "completed", "invest": 345.54, "tipo": "Compras no site", "results": 42, "cpr": 8.23, "impr": 41692, "alcance": 19443, "cpm": 8.29, "freq": 2.14, "cliques": 595, "cpc": 0.77, "ctr": 1.43, "thru": null, "cpt": null, "eng": 601, "visitas": 348, "comp": 59, "seg": 23, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "05 [MIF 26] - CONV - 15 dias LOTE", "short": "05 – 15 dias LOTE", "status": "completed", "invest": 203.63, "tipo": "Compras no site", "results": 32, "cpr": 6.36, "impr": 32223, "alcance": 15364, "cpm": 6.32, "freq": 2.1, "cliques": 589, "cpc": 0.62, "ctr": 1.83, "thru": null, "cpt": null, "eng": 632, "visitas": 269, "comp": 77, "seg": 17, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "06 [MIF 26] - CONV - Horas LOTE", "short": "06 – Horas LOTE", "status": "completed", "invest": 497.32, "tipo": "Compras no site", "results": 75, "cpr": 6.63, "impr": 71032, "alcance": 32166, "cpm": 7.0, "freq": 2.21, "cliques": 1175, "cpc": 0.69, "ctr": 1.65, "thru": null, "cpt": null, "eng": 1126, "visitas": 753, "comp": 71, "seg": 69, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "07 [MIF 26] - ENG - Emoção I", "short": "07 – Emoção", "status": "completed", "invest": 1487.63, "tipo": "ThruPlay", "results": 74477, "cpr": 0.02, "impr": 394214, "alcance": 210587, "cpm": 3.77, "freq": 1.87, "cliques": 9997, "cpc": 1.59, "ctr": 2.54, "thru": 74477, "cpt": 0.02, "eng": 235707, "visitas": 241, "comp": 213, "seg": 34, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "08 [MIF 26] - ENG - CARNAVAL", "short": "08 – Carnaval", "status": "completed", "invest": 982.89, "tipo": "ThruPlay", "results": 58767, "cpr": 0.02, "impr": 402215, "alcance": 215629, "cpm": 2.44, "freq": 1.87, "cliques": 4747, "cpc": 1.08, "ctr": 1.18, "thru": 58767, "cpt": 0.02, "eng": 229549, "visitas": 906, "comp": 236, "seg": 145, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "09 [MIF 26] - COM - LOTE I", "short": "09 – LOTE I", "status": "completed", "invest": 390.59, "tipo": "Compras no site", "results": 28, "cpr": 13.95, "impr": 47253, "alcance": 18752, "cpm": 8.27, "freq": 2.52, "cliques": 711, "cpc": 0.84, "ctr": 1.5, "thru": 60, "cpt": 6.51, "eng": 918, "visitas": 315, "comp": 71, "seg": 19, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "10 [MIF 26] - CONV - Horas LOTE Cópia", "short": "10 – Horas LOTE v2", "status": "completed", "invest": 826.38, "tipo": "Compras no site", "results": 95, "cpr": 8.7, "impr": 95403, "alcance": 31634, "cpm": 8.66, "freq": 3.02, "cliques": 1692, "cpc": 0.75, "ctr": 1.77, "thru": 1, "cpt": null, "eng": 1592, "visitas": 1050, "comp": 124, "seg": 68, "inicio": "01/08/2025", "fim": "21/04/2026"}, {"name": "11 [MIF 26] - CONV - Horas LOTE Final", "short": "11 – Horas LOTE v3", "status": "completed", "invest": 99.64, "tipo": "Compras no site", "results": 15, "cpr": 6.64, "impr": 12053, "alcance": 7254, "cpm": 8.27, "freq": 1.66, "cliques": 220, "cpc": 0.64, "ctr": 1.83, "thru": 482, "cpt": 0.21, "eng": 2658, "visitas": 174, "comp": 19, "seg": 3, "inicio": "01/08/2025", "fim": "21/04/2026"}];
+const BLUE = "#0d9de2", CYAN = "#00c2b3", LBLUE = "rgba(13,157,226,0.12)", GRID = "#1e3048";
+const statusColor = { active: BLUE, completed: CYAN, not_delivering: CYAN };
+const statusLabel = { active: "Ativa", completed: "Concluída", not_delivering: "Concluída" };
+const allLabels = camps.map(c => c.short);
+const campsCompras = camps.filter(c => c.tipo !== "ThruPlay");
+const campsThru = camps.filter(c => c.tipo === "ThruPlay");
+
+new Chart(document.getElementById("chartInvest"), {
+  type: "bar",
+  data: { labels: allLabels, datasets: [{ data: camps.map(c => c.invest), backgroundColor: camps.map(c => statusColor[c.status]), borderRadius: 4, borderSkipped: false }] },
+  options: { indexAxis: "y", responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => " R$ " + ctx.raw.toLocaleString("pt-BR", {minimumFractionDigits:2}) } } },
+    scales: { x: { ticks: { callback: v => "R$"+(v/1000).toFixed(1)+"k", font:{size:10}, color:"#6aaace" }, grid:{color:GRID} }, y: { ticks: { font:{size:10}, color:"#8bbdd4" }, grid:{display:false} } }
+  }
+});
+
+new Chart(document.getElementById("chartCompras"), {
+  type: "bar",
+  data: { labels: campsCompras.map(c => c.short), datasets: [{ data: campsCompras.map(c => c.results), backgroundColor: BLUE, borderRadius: 4, borderSkipped: false }] },
+  options: { indexAxis: "y", responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => " " + ctx.raw + " compras" } } },
+    scales: { x: { ticks: { font:{size:10}, color:"#6aaace" }, grid:{color:GRID} }, y: { ticks: { font:{size:10}, color:"#8bbdd4" }, grid:{display:false} } }
+  }
+});
+
+new Chart(document.getElementById("chartThruplay"), {
+  type: "bar",
+  data: { labels: campsThru.map(c => c.short), datasets: [{ data: campsThru.map(c => c.thru), backgroundColor: CYAN, borderRadius: 6, borderSkipped: false, barThickness: 60 }] },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => " " + ctx.raw.toLocaleString("pt-BR") + " ThruPlays" } } },
+    scales: { y: { ticks: { callback: v => v >= 1000 ? (v/1000).toFixed(0)+"k" : v, font:{size:11}, color:"#6aaace" }, grid:{color:GRID} }, x: { ticks: { font:{size:11}, color:"#8bbdd4" }, grid:{display:false} } }
+  }
+});
+
+new Chart(document.getElementById("chartCPR"), {
+  type: "line",
+  data: { labels: allLabels, datasets: [{ data: camps.map(c => c.cpr), borderColor: BLUE, backgroundColor: "rgba(13,157,226,0.08)", fill: true, tension: 0.35, pointBackgroundColor: camps.map(c => c.tipo === "ThruPlay" ? CYAN : BLUE), pointRadius: 5, borderWidth: 2 }] },
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => " R$ " + ctx.raw.toFixed(2) } } },
+    scales: { y: { ticks: { callback: v => "R$ "+v.toFixed(2), font:{size:11}, color:"#6aaace" }, grid:{color:"rgba(255,255,255,0.05)"} }, x: { ticks: { font:{size:11}, color:"#8bbdd4" }, grid:{display:false} } }
+  }
+});
+
+const maxImpr = Math.max(...camps.map(c => c.impr));
+const tbody = document.getElementById("campTable");
+camps.forEach(c => {
+  const pct = Math.round((c.impr / maxImpr) * 100);
+  const dotColor = c.status === "active" ? BLUE : CYAN;
+  const thru = c.thru != null ? c.thru.toLocaleString("pt-BR") : "—";
+  const cpt = c.cpt != null ? "R$ " + c.cpt.toFixed(2) : "—";
+  const tipoClass = c.tipo === "ThruPlay" ? "tag-thru" : "tag-compra";
+  tbody.innerHTML += `<tr>
+    <td style="min-width:220px">${c.name}</td>
+    <td><span class="dot" style="background:${dotColor}"></span>${statusLabel[c.status]}</td>
+    <td>R$ ${c.invest.toLocaleString("pt-BR",{minimumFractionDigits:2})}</td>
+    <td><span class="tag-tipo ${tipoClass}">${c.tipo}</span></td>
+    <td style="text-align:center">${c.results.toLocaleString("pt-BR")}</td>
+    <td style="text-align:center">R$ ${c.cpr.toFixed(2)}</td>
+    <td><div style="font-size:11px;color:#7a8fa6">${c.impr.toLocaleString("pt-BR")}</div><div class="bar-mini" style="width:${pct}%"></div></td>
+    <td>${c.alcance.toLocaleString("pt-BR")}</td>
+    <td>R$ ${c.cpm.toFixed(2)}</td>
+    <td style="text-align:center">${c.freq.toFixed(2)}</td>
+    <td style="text-align:center">${c.cliques.toLocaleString("pt-BR")}</td>
+    <td>R$ ${c.cpc.toFixed(2)}</td>
+    <td style="text-align:center">${c.ctr.toFixed(2)}%</td>
+    <td style="text-align:center">${thru}</td>
+    <td style="text-align:center">${cpt}</td>
+    <td style="text-align:center">${c.eng.toLocaleString("pt-BR")}</td>
+    <td style="text-align:center">${c.visitas.toLocaleString("pt-BR")}</td>
+    <td style="text-align:center">${c.comp}</td>
+    <td style="text-align:center">${c.seg}</td>
+    <td style="font-size:11px;color:#b0bec8">${c.inicio}</td>
+    <td style="font-size:11px;color:#b0bec8">${c.fim}</td>
+  </tr>`;
+});
+
+const n = camps.length;
+const sum = f => camps.reduce((s,c) => s + f(c), 0);
+const avg = f => sum(f) / n;
+const fmtN = v => Math.round(v).toLocaleString("pt-BR");
+const fmtD = v => v.toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
+const med = '<span class="med"> (méd.)</span>';
+const excl = '<span class="med"> exceto 07/08</span>';
+const cptCamps = camps.filter(c => c.cpt != null);
+const avgCpt = cptCamps.reduce((s,c) => s + c.cpt, 0) / cptCamps.length;
+
+document.getElementById("campTotals").innerHTML = `<tr>
+  <td>Total / Média</td><td>—</td>
+  <td>R$ ${fmtD(sum(c => c.invest))}</td><td>—</td>
+  <td style="text-align:center">${fmtN(campsCompras.reduce((s,c)=>s+c.results,0))}${excl}</td>
+  <td style="text-align:center">R$ ${fmtD(avg(c => c.cpr))}${med}</td>
+  <td>${fmtN(sum(c => c.impr))}</td>
+  <td>${fmtN(sum(c => c.alcance))}</td>
+  <td>R$ ${fmtD(avg(c => c.cpm))}${med}</td>
+  <td style="text-align:center">${fmtD(avg(c => c.freq))}${med}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.cliques))}</td>
+  <td>R$ ${fmtD(avg(c => c.cpc))}${med}</td>
+  <td style="text-align:center">${fmtD(avg(c => c.ctr))}%${med}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.thru || 0))}</td>
+  <td style="text-align:center">R$ ${fmtD(avgCpt)}${med}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.eng))}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.visitas))}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.comp))}</td>
+  <td style="text-align:center">${fmtN(sum(c => c.seg))}</td>
+  <td>—</td><td>—</td>
+</tr>`;
+</script>
+</body>
+</html>
